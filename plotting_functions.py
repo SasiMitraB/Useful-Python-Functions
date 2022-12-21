@@ -19,3 +19,35 @@ def plot_best_fit_line(x_vals, y_data, x_lab = '', y_lab = ''):
   plt.legend(['Slope = {slope}'.format(slope = str(slope)), "Intercept = {intercept}".format(intercept = str(intercept))], loc = 0, frameon = True)
   #Displaying the graph
   plt.show()
+  
+  
+  
+def fit_gaussian_and_plot(x_data, y_data):
+  import numpy as np
+  import matplotlib.pyplot as plt
+  from scipy.optimize import curve_fit
+  # Define the Gaussian function
+  def gaussian(x, mu, sigma, A):
+      return A*np.exp(-(x-mu)**2/2/sigma**2)
+
+  # Add some noise to the data
+  y_data += np.random.normal(0, 0.1, size=len(x_data))
+
+  # Fit the Gaussian function to the data
+  params, cov = curve_fit(gaussian, x_data, y_data)
+
+  # Extract the optimal parameters
+  mu, sigma, A = params
+
+  # Create a new set of x values for the fitted curve
+  x_fit = x_vals
+
+  # Calculate the fitted curve
+  y_fit = gaussian(x_fit, mu=mu, sigma=sigma, A=A)
+
+  # Plot the scatterplot and the fitted curve
+  plt.scatter(x_data, y_data, color='b')
+  plt.plot(x_fit, y_fit, color='k')
+  plt.show()
+
+
