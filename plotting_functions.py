@@ -22,7 +22,7 @@ def plot_best_fit_line(x_vals, y_data, x_lab = '', y_lab = ''):
   
   
   
-def fit_gaussian_and_plot(x_data, y_data):
+def fit_gaussian_and_plot(x_data, y_data, xlab = "", ylab = "", tit = ""):
   import numpy as np
   import matplotlib.pyplot as plt
   from scipy.optimize import curve_fit
@@ -30,8 +30,6 @@ def fit_gaussian_and_plot(x_data, y_data):
   def gaussian(x, mu, sigma, A):
       return A*np.exp(-(x-mu)**2/2/sigma**2)
 
-  # Add some noise to the data
-  y_data += np.random.normal(0, 0.1, size=len(x_data))
 
   # Fit the Gaussian function to the data
   params, cov = curve_fit(gaussian, x_data, y_data)
@@ -46,8 +44,49 @@ def fit_gaussian_and_plot(x_data, y_data):
   y_fit = gaussian(x_fit, mu=mu, sigma=sigma, A=A)
 
   # Plot the scatterplot and the fitted curve
-  plt.scatter(x_data, y_data, color='b')
-  plt.plot(x_fit, y_fit, color='k')
+  plt.scatter(x_data, y_data, color='b', label = "Original Data")
+  plt.plot(x_fit, y_fit, color='k', label = "Best Gaussian Fit")
+  plt.xlabel(xlab)
+  plt.ylabel(ylab)
+  plt.title(tit)
+  plt.legend()
   plt.show()
+
+def fit_sinc_and_plot(x_data, y_data, xlab = "", ylab = "", tit = ""):
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.optimize import curve_fit
+    # Define the sinc function
+    def sinc(x, A, B, C):
+        out = A * np.sinc(B * (x - C))
+        out = out**2
+        return out
+
+    # Initial guesses for the sinc parameters
+    p0 = [np.max(y_data), 1, np.mean(x_data)]
+
+    # Fit the sinc function to the data
+    params, cov = curve_fit(sinc, x_data, y_data, p0=p0)
+
+    # Extract the optimal parameters
+    A, B, C = params
+
+    # Create a new set of x values for the fitted curve
+    x_fit = np.linspace(min(x_data), max(x_data), 1000)
+
+    # Calculate the fitted curve
+    y_fit = sinc(x_fit, A=A, B=B, C=C)
+
+    # Plot the scatterplot and the fitted curve
+    plt.scatter(x_data, y_data, color='b', label = "Data")
+    plt.plot(x_fit, y_fit, color='k', label = "Best fit")
+    plt.xlabel(xlab)
+    plt.ylabel(ylab)
+    plt.title(tit)
+    plt.legend()
+    plt.show()
+
+
+
 
 
