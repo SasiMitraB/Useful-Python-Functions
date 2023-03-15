@@ -5,20 +5,31 @@ from matplotlib import pyplot as plt
 #Makes a Plot with the best fit line. 
 #Adds a flag with Slope and Intercept values
 #Optionally Adds axis labels
-def plot_best_fit_line(x_vals, y_data, x_lab = '', y_lab = ''):
-  plt.rcParams['figure.figsize'] = [12,9]
-  slope, intercept = np.polyfit(x_vals, y_data, 1) #Caluclates the Slope and Intercept
-  print(slope, "Slope of the Curve") 
-  print(intercept, "Intercept of the curve")
-  y_pred = [(slope*i + intercept) for i in x_vals] #Predicted value at each datapoint in x_vals
-  plt.scatter(x_vals, y_data) #Scatter plot of original data
-  plt.plot(x_vals, y_pred, color = 'red') #Draws the best fit line
-  plt.xlabel(x_lab) #Adding x label
-  plt.ylabel(y_lab) #Adding y label
-  #Adding a legend with the information on the slope and intercept
-  plt.legend(['Slope = {slope}'.format(slope = str(slope)), "Intercept = {intercept}".format(intercept = str(intercept))], loc = 0, frameon = True)
-  #Displaying the graph
-  plt.show()
+def plot_best_fit_line(x_vals, y_data, x_lab = '', y_lab = '', tit = ""):
+    plt.rcParams['figure.figsize'] = [12,9]
+    slope, intercept = np.polyfit(x_vals, y_data, 1) # Calculates the slope and intercept
+    y_pred = [(slope*i + intercept) for i in x_vals] # Predicted value at each datapoint in x_vals
+    residuals = y_data - y_pred # Calculates the residuals
+    ss_res = np.sum(residuals**2) # Calculates the sum of squares of residuals
+    ss_tot = np.sum((y_data - np.mean(y_data))**2) # Calculates the total sum of squares
+    r_squared = 1 - (ss_res / ss_tot) # Calculates the coefficient of determination (R-squared)
+    n = len(x_vals) # Number of data points
+    std_error_slope = np.sqrt(ss_res / ((n - 2) * np.sum((x_vals - np.mean(x_vals))**2))) # Standard error of the slope
+    std_error_intercept = np.sqrt(ss_res / (n - 2) * ((1/n) + (np.mean(x_vals)**2 / np.sum((x_vals - np.mean(x_vals))**2)))) # Standard error of the intercept
+    print("Slope of the line: {:.2f}, Standard error of slope: {:.2f}".format(slope, std_error_slope))
+    print("Intercept of the line: {:.2f}, Standard error of intercept: {:.2f}".format(intercept, std_error_intercept))
+    plt.scatter(x_vals, y_data) # Scatter plot of original data
+    plt.plot(x_vals, y_pred, color = 'red') # Draws the best fit line
+    plt.xlabel(x_lab) # Adding x label
+    plt.ylabel(y_lab) # Adding y label
+    plt.title(tit)
+    # Adding a legend with the information on the slope and intercept
+    plt.legend(['Slope = {slope:.2f} $\pm$ {std_err_slope:.2f}'.format(slope=slope, std_err_slope=std_error_slope), 
+                'Intercept = {intercept:.2f} $\pm$ {std_err_intercept:.2f}'.format(intercept=intercept, std_err_intercept=std_error_intercept)], 
+               loc = 0, frameon = True)
+    # Displaying the graph
+    plt.show()
+
   
   
   
