@@ -74,7 +74,7 @@ def fit_gaussian_and_plot(x_data, y_data, guesses=None, xlab="", ylab="", tit=""
     print("Calculating the Best Fit Gaussian")
 
     # Fit the Gaussian function to the data
-    params, cov = curve_fit(gaussian, x_data, y_data)
+    params, cov = curve_fit(gaussian, x_data, y_data,  p0=guesses)
 
     # Extract the optimal parameters
     mu, sigma, A = params
